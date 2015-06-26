@@ -12,12 +12,12 @@ from django.template import RequestContext
 from django.core.urlresolvers import reverse
 from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
-from django.conf import settings                                        #For using settings in Python code
+
 
 
 from django.contrib.auth.models import User
 
-from privatemessages.models import Thread, Message
+from privatemessages.models import Thread
 
 from privatemessages.utils import json_response, send_message
 
@@ -102,7 +102,6 @@ def send_message_api_view(request,thread_id):
     thread.id,
     request.user.id,
     message_text,
-    request.user.username,
     )
 
     return json_response({"status":"Ok"})
