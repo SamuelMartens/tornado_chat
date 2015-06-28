@@ -36,7 +36,7 @@ def send_message(thread_id, sender_id, message_text, sender_name=None):
     already published in the channel).
     """
 
-    message=Message()
+    message = Message()
     message.text=message_text
     message.thread_id=thread_id
     message.sender_id=sender_id
