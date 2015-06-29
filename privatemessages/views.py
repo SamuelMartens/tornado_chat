@@ -62,10 +62,10 @@ def send_message_view(request):
         thread.participants.add(request.user, recipient)
 
     send_message(
-    thread.id,
-    request.user.id,
-    message_text,
-    request.user.username,
+        thread.id,
+        request.user.id,
+        message_text,
+        request.user.username,
     )
 
     return HttpResponseRedirect(
@@ -77,11 +77,12 @@ def send_message_view(request):
 #Send message through Tornado
 @csrf_exempt
 def send_message_api_view(request,thread_id):
+    #assert False
     if not request.method=='POST':
         return json_response({"error":"Please use POST"})
 
     try:
-        thread=Thread.objects.get(id=thread_id)
+        thread = Thread.objects.get(id = thread_id)
     except Thread.DoesNotExist:
         return json_response({"error":"No such thread"})
 
@@ -99,9 +100,9 @@ def send_message_api_view(request,thread_id):
         return json_response({"error":"The message must be less than 1000 characters."})
 
     send_message(
-    thread.id,
-    request.user.id,
-    message_text,
+        thread.id,
+        sender.id,
+        message_text
     )
 
     return json_response({"status":"Ok"})

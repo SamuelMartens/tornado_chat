@@ -80,6 +80,7 @@ function activate_chat( thread_id, user_name, number_of_messages){
             var time = $.map([date.getHours(), date.getMinutes(), date.getSeconds()], function(val, i) {
                 return (val<10) ? '0'+val : val;
             });
+       
             // Adding of new message in chat window
             $("div.chat div.conversation").append('<div class="message"><p class="author ' + ((message_data.sender == user_name) ? 'we'
             : 'partner') + '"><span class="datetime">' + time[0] +':' + time[1] + ':' + time[2] + '</span> ' + message_data.sender + ':</p><p class="message">' +
@@ -98,10 +99,10 @@ function activate_chat( thread_id, user_name, number_of_messages){
             ['сообщение','сообщения','сообщений']) + ' (<span class="received">' + number_of_messages['received'] + '</span> получено, <span class="sent">' +
             number_of_messages['sent'] + '</span> отправлено)');
 
-        };
+        }
 
         //Try to reconnect in the event of closing during the 5 seconds
-        ws.onclose = fuction (){
+        ws.onclose = function (){
             setTimeout(function() {start_chat_ws()}, 5000);
         };
 
@@ -109,6 +110,7 @@ function activate_chat( thread_id, user_name, number_of_messages){
 
     // Are the webSocket allowed?
     if ("WebSocket" in window) {
+
         start_chat_ws();
     }
     else {
@@ -127,7 +129,7 @@ function activate_chat( thread_id, user_name, number_of_messages){
             return false;
         }
         //Are the web scoket connection open?
-        if (ws.readyState !=WebSocket.OPEN) {
+        if (ws.readyState != WebSocket.OPEN) {
             return false
         }
 

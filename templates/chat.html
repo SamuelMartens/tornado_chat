@@ -3,6 +3,9 @@
 {% block title %} {{partners.username}}{% endblock %}
 
 {% block head %}
+
+{% load staticfiles %}
+
 <script type="text/javascript">
 $(document).ready(function() {
     activate_chat({{ thread_id}}, "{{ user.username }}", {

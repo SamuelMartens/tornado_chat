@@ -2,7 +2,7 @@
 import datetime
 import json
 import time
-import urllib
+import urllib.parse
 
 import tornadoredis
 import tornado.web
@@ -42,6 +42,7 @@ class MessagesHandler(tornado.websocket.WebSocketHandler ):
 
 
     def open(self, thread_id):
+
         session_key = self.get_cookie(settings.SESSION_COOKIE_NAME)
         session = session_engine.SessionStore(session_key)
         try:
@@ -65,6 +66,7 @@ class MessagesHandler(tornado.websocket.WebSocketHandler ):
 
 
     def on_message(self, message):
+
         if not message:
             return
         if len(message) > 1000:
@@ -79,32 +81,40 @@ class MessagesHandler(tornado.websocket.WebSocketHandler ):
         request = tornado.httpclient.HTTPRequest(
             "".join([settings.SEND_MESSAGE_API_URL, "/", self.thread_id, "/"]),
             method="POST",
-            body = urllib.urlencode({
+            body = urllib.parse.urlencode({
                 "message": message.encode ("utf-8"),
                 "sender_id": self.user_id,
             })
         )
 
+
         http_client.fetch(request, self.handle_request)
+        #assert False
+
+    def show_new_message(self, result):
+        self.write_message(str(result.body))
 
 
-        def on_close(self):
-            try:
-                self.client.unsubscribe(self.channel)
-            except AttributeError:
-                pass
-            def check():
-                if self.client.connection.in_progress:
-                    tornado.ioloop.IOLoop.instance().add_timeout(
-                        datetime.timedelta(0.00001),
-                        check
-                    )
-                else:
-                    self.client.disconnected()
-            tornado.ioloop.IOLoop.instance().add_timeout(
-                datetime.timedelta(0.00001),
-                check
-            )
+    def on_close(self):
+        try:
+            self.client.unsubscribe(self.channel)
+        except AttributeError:
+            pass
+        def check():
+            if self.client.connection.in_progress:
+                tornado.ioloop.IOLoop.instance().add_timeout(
+                    datetime.timedelta(0.00001),
+                    check
+                )
+            else:
+                self.client.disconnect()
+        tornado.ioloop.IOLoop.instance().add_timeout(
+            datetime.timedelta(0.00001),
+            check
+        )
+
+    def check_origin(self, origin):
+        return True
 
 
 application = tornado.web.Application([

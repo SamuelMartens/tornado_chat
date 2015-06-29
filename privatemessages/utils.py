@@ -46,6 +46,7 @@ def send_message(thread_id, sender_id, message_text, sender_name=None):
     sender_id=str(sender_id)
 
     r=redis.StrictRedis()
+    #assert False
 
     if sender_name:
         r.publish("".join(["thread_id",thread_id,"_messages"]), json.dumps({
