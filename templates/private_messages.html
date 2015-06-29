@@ -6,14 +6,14 @@
     <h1>Собеседники</h1>
     <div class="partners">
     {% for thread in threads %}
-        <p><a href="{% url privatemessages.views.chat_view thread.id %}">{{ thread.partner.username}} ({{ thread.total_messages|default_if_none:"0"}}
+        <p><a href="{% url 'privatemessages.views.chat_view' thread.id %}">{{ thread.partner.username}} ({{ thread.total_messages|default_if_none:"0"}}
             {{thread.total_messages|rupluralize:"сообщение, сообщения, сообщений" }})</a> </p>
         {% empty %}
           <p>Пока сообщений нет.</p>
         {% endfor %}
         </div>
     <h1>Отправить сообщение</h1>
-    <form action="{% url privatemessages.view.send_message_view %}" method="POST" class="new_message">
+    <form action="{% url 'privatemessages.views.send_message_view' %}" method="POST" class="new_message">
         {% csrf_token %}
         <p class="name"><input name="recipient_name" placeholder="Имя получателя"></p>
         <p><textarea name="message" placeholder="Сообщение"></textarea> </p>

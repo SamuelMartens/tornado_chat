@@ -50,7 +50,7 @@ class MessagesHandler(tornado.websocket.WebSocketHandler ):
         except (KeyError, User.DoesNotExist):
             self.close()
             return
-        if not Thread.objects.filter(id = thread_id, participants__id = self.user_id).exist():
+        if not Thread.objects.filter(id = thread_id, participants__id = self.user_id).exists():
             self.close()
             return
         self.channel = "".join(['thread_', thread_id, '_messages'])

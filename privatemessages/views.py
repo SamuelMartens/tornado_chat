@@ -45,7 +45,7 @@ def send_message_view(request):
     except User.DoesNotExist:
         return HttpResponse("This user does not exist.")
 
-    if recipient==request.User:
+    if recipient == request.user:
         return HttpResponse("You can't send message to yourself")
 
     thread_queryset=Thread.objects.filter(
@@ -55,7 +55,7 @@ def send_message_view(request):
     )
 
 
-    if thread_queryset.exist():
+    if thread_queryset.exists():
         thread=thread_queryset[0]
     else:
         thread=Thread.objects.create()
@@ -117,7 +117,7 @@ def messages_view(request):
     ).order_by("-last_message")
 
     if not threads:
-        return render_to_response("private_messages.html",{},content_instance=RequestContext(request))
+        return render_to_response("private_messages.html",{},context_instance=RequestContext(request))
 
     r=redis.StrictRedis()
 
@@ -135,7 +135,7 @@ def messages_view(request):
     return render_to_response('private_messages.html',
                               {
                                   "threads":threads,
-                              }, content_instance=RequestContext(request)
+                              }, context_instance=RequestContext(request)
                               )
 
 

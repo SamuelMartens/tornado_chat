@@ -6,9 +6,9 @@ from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
 
 urlpatterns = patterns('',
-
+    url(r'^messages/', include('privatemessages.urls')),
     url(r'^admin/', include(admin.site.urls)),
-    url(r'^messages/',include('privatemessages.urls')),
+
 )
 
 urlpatterns+=staticfiles_urlpatterns()
