@@ -72,10 +72,10 @@ function activate_chat( thread_id, user_name, number_of_messages){
         ws = new WebSocket("ws://127.0.0.1:8888/"+thread_id+"/");
         //Collback on getting data on this websocket
         ws.onopen = function () {
-            alert("CONNECT!");};
+            //alert("CONNECT!");};
 
         ws.onmessage = function(event) {
-            alert ("MESSAGE");
+            //alert ("MESSAGE");
             // JSON.parse converst JSON text into JavaScript onject
             var message_data = JSON.parse(event.data);
             // timestamp get the number of milliseconds since January 1, 1970
@@ -107,7 +107,6 @@ function activate_chat( thread_id, user_name, number_of_messages){
 
         //Try to reconnect in the event of closing during the 5 seconds
         ws.onclose = function (){
-            alert("DISCONNECT!!!!1");
             setTimeout(function() {start_chat_ws()}, 5000);
         };
 
