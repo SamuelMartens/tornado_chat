@@ -71,16 +71,20 @@ function activate_chat( thread_id, user_name, number_of_messages){
         //Opening of WebSocket connection
         ws = new WebSocket("ws://127.0.0.1:8888/"+thread_id+"/");
         //Collback on getting data on this websocket
+        ws.onopen = function () {
+            alert("CONNECT!");};
+
         ws.onmessage = function(event) {
+            alert ("MESSAGE");
             // JSON.parse converst JSON text into JavaScript onject
             var message_data = JSON.parse(event.data);
             // timestamp get the number of milliseconds since January 1, 1970
-            var date = new Date(message_data.timestamp/1000);
+            var date = new Date(message_data.timestamp*1000);
             // $.map gets an array and work with in with callback function and then return new array
             var time = $.map([date.getHours(), date.getMinutes(), date.getSeconds()], function(val, i) {
                 return (val<10) ? '0'+val : val;
             });
-       
+
             // Adding of new message in chat window
             $("div.chat div.conversation").append('<div class="message"><p class="author ' + ((message_data.sender == user_name) ? 'we'
             : 'partner') + '"><span class="datetime">' + time[0] +':' + time[1] + ':' + time[2] + '</span> ' + message_data.sender + ':</p><p class="message">' +
@@ -103,6 +107,7 @@ function activate_chat( thread_id, user_name, number_of_messages){
 
         //Try to reconnect in the event of closing during the 5 seconds
         ws.onclose = function (){
+            alert("DISCONNECT!!!!1");
             setTimeout(function() {start_chat_ws()}, 5000);
         };
 

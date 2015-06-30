@@ -93,6 +93,7 @@ def send_message_api_view(request,thread_id):
 
     message_text=request.POST.get("message")
 
+    print("recieved message: "+str(message_text))
     if not message_text:
         return json_response({"error":"Message text cannot be empty"})
 

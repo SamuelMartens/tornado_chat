@@ -1,4 +1,4 @@
-
+#!/usr/bin/python3
 import datetime
 import json
 import time
@@ -42,7 +42,7 @@ class MessagesHandler(tornado.websocket.WebSocketHandler ):
 
 
     def open(self, thread_id):
-
+        print("test")
         session_key = self.get_cookie(settings.SESSION_COOKIE_NAME)
         session = session_engine.SessionStore(session_key)
         try:
@@ -66,7 +66,7 @@ class MessagesHandler(tornado.websocket.WebSocketHandler ):
 
 
     def on_message(self, message):
-
+       # print("Message recieved: "+str(message))
         if not message:
             return
         if len(message) > 1000:
@@ -89,9 +89,15 @@ class MessagesHandler(tornado.websocket.WebSocketHandler ):
 
 
         http_client.fetch(request, self.handle_request)
-        #assert False
+        result = json.dumps({
+            "timestamp": int(time.time()),
+            "sender": self.sender_name,
+            "text": message,
+        })
+        self.write_message(result)
 
     def show_new_message(self, result):
+        print("Redis message received")
         self.write_message(str(result.body))
 
 
