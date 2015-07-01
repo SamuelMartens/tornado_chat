@@ -25,7 +25,7 @@ $(document).ready(function() {
 <div class="chat">
     <div class="partner">
         <p class="name">{{ partner.username }}</p>
-        <p class="messages"><span class="total">{{ messages_total }} </span> {{messages_total|rupluralize:"сообщение, сообщения,сообщений"}}
+        <p class="messages"><span class="total">{{ messages_total }}  </span> {{messages_total|rupluralize:"сообщение, сообщения,сообщений"}}
         (<span class="received">{{ messages_received }}</span> получено, <span class="sent">{{ messages_sent }}</span> отправлено) </p>
     </div>
     <div class="conversation">

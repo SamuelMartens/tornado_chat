@@ -72,7 +72,8 @@ function activate_chat( thread_id, user_name, number_of_messages){
         ws = new WebSocket("ws://127.0.0.1:8888/"+thread_id+"/");
         //Collback on getting data on this websocket
         ws.onopen = function () {
-            //alert("CONNECT!");};
+            //alert("CONNECT!");
+            };
 
         ws.onmessage = function(event) {
             //alert ("MESSAGE");
@@ -136,6 +137,7 @@ function activate_chat( thread_id, user_name, number_of_messages){
         if (ws.readyState != WebSocket.OPEN) {
             return false
         }
+        
 
         ws.send(textarea.val());
         textarea.val('');
