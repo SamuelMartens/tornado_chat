@@ -1,6 +1,7 @@
 html, body {
-    height:100%;
-    margin:0;
+    height:97%;
+    margin:0px;
+
     }
 
 
@@ -49,7 +50,7 @@ div.chat {
     }
 
 div.chat div.partner {
-    height: 50px;
+    height: 70px;
     padding: 5px;
     }
 
@@ -64,7 +65,9 @@ div.chat div.partner p.name {
 
 div.chat div.conversation {
     position: absolute;
-    top: 50px;
+    height:60%;
+    min_height: 500px;
+    top: 70px;
     left: 5px;
     right: 5px;
     bottom: 140px;
@@ -97,7 +100,8 @@ div.chat form.message_form {
     left:0;
     right: 0;
     bottom: 5px;
-    height: 130px;
+    height: 15%;
+    min_height:125px;
     }
 
 
@@ -142,8 +146,32 @@ div.chat form.message_form div.send p {
     }
 
 div.chat form.message_form div.send button{
-    width: 100%;
+    width: 80%;
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
     box-sizing: border-box;
     }
+
+
+div.background_popup {
+    width:100%;
+    min-height:100%;
+    background-color:rgba(0,0,0,0.5);
+    overflow:hidden;
+    position:fixed;
+    top: 0px;
+}
+
+div.background_popup form.choose_user {
+    margin: 100px auto auto;
+    width: 200px;
+    height: 50px;
+    padding: 10px;
+    border-radius:5px;
+    box-shadow: 0px 0px 10px #000;
+    background-color:white;
+
+
+
+}
+

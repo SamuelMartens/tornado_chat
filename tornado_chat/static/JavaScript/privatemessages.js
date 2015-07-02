@@ -54,6 +54,16 @@ if (timezone == null) {
     setCookie('timezone', jstz.determine().name());
 }
 
+//Hide choose user form
+function popUpHide(){
+    $("#b1").hide();
+    }
+
+//Show choose user form
+function popUpShow() {
+    $("#b1").show(500);
+    }
+
 function activate_chat( thread_id, user_name, number_of_messages){
     $("div.chat form.message_form div.compose textarea").focus();
 
@@ -130,6 +140,10 @@ function activate_chat( thread_id, user_name, number_of_messages){
     //Function send message through the web socket
     function send_message() {
         var textarea = $("textarea#message_textarea");
+        var send_message_text = {
+        "operation":"send_message",
+        "message":textarea.val(),
+        }
         if (textarea.val() == ''){
             return false;
         }
@@ -137,13 +151,51 @@ function activate_chat( thread_id, user_name, number_of_messages){
         if (ws.readyState != WebSocket.OPEN) {
             return false
         }
-        
 
-        ws.send(textarea.val());
+
+        ws.send(JSON.stringify(send_message_text));
         textarea.val('');
-    }
+    };
+
+
+
+    function add_user() {
+        popUpShow();
+        var i=0;
+        $("input#choose_user_accept").click(function(){
+            var username = $("input#choose_user_text").val();
+            var send_message_text = {
+            "operation":"add_user",
+            "username":username
+            };
+            i+=1;
+
+            if (i != 1){
+                return false
+            };
+
+            if (username == user_name){
+                alert ("Вы не можете добавить себя");
+                add_user();
+                return false
+            };
+
+            if ( ws.readyState != WebSocket.OPEN){
+                return false
+            };
+
+            ws.send(JSON.stringify(send_message_text));
+            popUpHide();
+            $("input#choose_user_text").val('');
+
+        });
+        }
+
+
+
 
     $("form.message_form div.send button").click(send_message);
+    $("div.partner form.user_tools button#add_user").click(add_user);
 
     //Ctrt + Enter message send
     $("textarea#message_textarea").keydown( function (e){

@@ -8,11 +8,14 @@
 
 <script type="text/javascript">
 $(document).ready(function() {
+
     activate_chat({{ thread_id}}, "{{ user.username }}", {
         "total": {{messages_total }},
         "sent": {{messages_sent }},
         "received": {{messages_received }}
         });
+    popUpHide();
+
       });
 
 </script>
@@ -23,10 +26,15 @@ $(document).ready(function() {
 {% block content %}
 {% load pluralize %}
 <div class="chat">
+
     <div class="partner">
         <p class="name">{{ partner.username }}</p>
         <p class="messages"><span class="total">{{ messages_total }}  </span> {{messages_total|rupluralize:"сообщение, сообщения,сообщений"}}
         (<span class="received">{{ messages_received }}</span> получено, <span class="sent">{{ messages_sent }}</span> отправлено) </p>
+        <form class="user_tools">
+            <button class="btn" id="add_user" type="button">Добавить собеседника</button>
+            <button class="btn" id="delete_user" type="button">Удалить собеседника</button>
+        </form>
     </div>
     <div class="conversation">
         {% for message in thread_messages reversed %}
@@ -45,6 +53,7 @@ $(document).ready(function() {
             <p class="message">{{message.text|linebreaksbr }}</p>
         </div>
         {% endfor %}
+
     </div>
     <form class="message_form">
         <div class="compose">
@@ -55,5 +64,12 @@ $(document).ready(function() {
             <p>Вы можете отправлять сообщение с помощью Ctrl+Enter</p>
         </div>
     </form>
+     <div class="background_popup" id="b1">
+        <form class="choose_user">
+            <input class="btn" id="choose_user_text" type="text" placeholder="Имя пользователя">
+            <input class="btn" id="choose_user_accept" type="button" value="Ok">
+        </form>
+
+    </div>
 </div>
 {% endblock content %}

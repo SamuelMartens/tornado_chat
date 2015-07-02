@@ -30,6 +30,7 @@ class MainHandler(tornado.web.RequestHandler):
     def get(self):
         self.set_header('Content-Type', 'text/plain')
         self.write(' Tornado handle HTTP request ')
+        print ("Tornado handle GET request")
 
 
 
@@ -38,12 +39,6 @@ class MessagesHandler(tornado.websocket.WebSocketHandler ):
         super(MessagesHandler, self).__init__(*args, **kwargs)
         self.client=tornadoredis.Client()
         self.client.connect()
-
-    def show_new_message(self):
-        print("Redis message received")
-        #self.write_message(str(result.body))
-
-
 
 
     def open(self, thread_id):
@@ -68,30 +63,83 @@ class MessagesHandler(tornado.websocket.WebSocketHandler ):
         pass
 
 
-    def on_message(self, message):
-       # print("Message recieved: "+str(message))
-        if not message:
-            return
-        if len(message) > 1000:
-            return
+    def on_message(self, ws_response):
+        """ Function get message form WebSocket client,
+        and according to the context of "operation"
+        will do the following action:
+            - send message
+            - add new recipient in the chat room
+         """
+        ws_response = json.loads(ws_response)
 
-        http_client = tornado.httpclient.AsyncHTTPClient()
-        request = tornado.httpclient.HTTPRequest(
-            "".join([settings.SEND_MESSAGE_API_URL, "/", self.thread_id, "/"]),
-            method="POST",
-            body = urllib.parse.urlencode({
-                "message": message.encode ("utf-8"),
-                "sender_id": self.user_id,
+
+        if ws_response['operation'] == 'add_user':
+            print (ws_response)
+            username = ws_response['username']
+
+            if not username:
+                return
+            try:
+                User.objects.get(username= username)
+            except User.DoesNotExist:
+                return
+            if username == str (self.sender_name):
+                return
+
+
+            http_client = tornado.httpclient.AsyncHTTPClient()
+            request = tornado.httpclient.HTTPRequest(
+                "".join([settings.USERSET_EDIT_API_URL,"/",self.thread_id,"/"]),
+                method = "POST",
+                body = urllib.parse.urlencode({
+                    "operation":"add_user",
+                    "username":username.encode("utf-8"),
+                }))
+
+
+            http_client.fetch (request, self.handle_request)
+
+            message = ("{0} добавил нового пользователя {1}  ".format(self.sender_name, username))
+            
+            result = json.dumps({
+                "timestamp": int(time.time()),
+                "sender": self.sender_name,
+                "text": message,
             })
-        )
+            self.write_message(result)
 
-        http_client.fetch(request, self.handle_request)
-        result = json.dumps({
-            "timestamp": int(time.time()),
-            "sender": self.sender_name,
-            "text": message,
-        })
-        self.write_message(result)
+
+
+
+
+        if ws_response['operation'] == 'send_message':
+            message = ws_response["message"]
+
+
+            if not message:
+                return
+            if len(message) > 1000:
+                return
+
+            http_client = tornado.httpclient.AsyncHTTPClient()
+            request = tornado.httpclient.HTTPRequest(
+                "".join([settings.SEND_MESSAGE_API_URL, "/", self.thread_id, "/"]),
+                method="POST",
+                body = urllib.parse.urlencode({
+                    "message": message.encode ("utf-8"),
+                    "sender_id": self.user_id,
+                })
+            )
+
+            http_client.fetch(request, self.handle_request)
+            result = json.dumps({
+                "timestamp": int(time.time()),
+                "sender": self.sender_name,
+                "text": message,
+            })
+            self.write_message(result)
+
+
 
 
 

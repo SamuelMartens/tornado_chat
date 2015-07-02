@@ -1,6 +1,6 @@
 
 
-import json
+
 
 import redis
 
@@ -20,6 +20,10 @@ from django.contrib.auth.models import User
 from privatemessages.models import Thread
 
 from privatemessages.utils import json_response, send_message
+
+
+
+
 
 
 #Send message through Django, use only for first message
@@ -196,3 +200,45 @@ def chat_view(request, thread_id):
                                   "partner":partner,
                               },
                               context_instance=RequestContext(request))
+
+
+@csrf_exempt
+def edit_user_set(request, thread_id):
+     #Function get an inforamtion from tornado app about
+     # delete or add some user and username of target,
+     # it also get thread_id
+
+     print("Request get")
+     if not request.method == "POST":
+         json_response({"error":"Please use POST method"})
+
+     try:
+          thread = Thread.objects.get(id = thread_id)
+     except Thread.DoesNotExist:
+         json_response({"error":"This thread does not exist"})
+
+
+     username = request.POST.get("username")
+     try:
+         target_user = User.objects.get(username = username)
+     except User.DoesNotExist:
+         json_response("This user does not exist")
+
+     if request.POST.get("operation") == "add_user":
+
+         print ("b3_!")
+         print (thread.participants.get(username="samuel1"))
+         try:
+             thread.participants.get (username = username)
+             print ("User not added")
+         except User.DoesNotExist:
+             thread.participants.add(target_user)
+             print ("User added")
+             return json_response({"status":"Ok"})
+
+     return json_response({"error":"This user is already in thread"})
+
+
+
+
+
