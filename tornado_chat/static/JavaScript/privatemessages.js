@@ -86,8 +86,9 @@ function activate_chat( thread_id, user_name, number_of_messages){
             };
 
         ws.onmessage = function(event) {
-            //alert ("MESSAGE");
+
             // JSON.parse converst JSON text into JavaScript onject
+            var operation
             var message_data = JSON.parse(event.data);
             // timestamp get the number of milliseconds since January 1, 1970
             var date = new Date(message_data.timestamp*1000);
@@ -113,6 +114,13 @@ function activate_chat( thread_id, user_name, number_of_messages){
             $("div.chat p.messages").html('<span class="total">' + number_of_messages["total"] + '</span>' + getNumEnding(number_of_messages['total'],
             ['сообщение','сообщения','сообщений']) + ' (<span class="received">' + number_of_messages['received'] + '</span> получено, <span class="sent">' +
             number_of_messages['sent'] + '</span> отправлено)');
+
+            if (message_data.operation == "add_user"){
+                $("div.chat div.partner span.name").append(" " +
+                    message_data.username
+                );
+
+            };
 
         }
 

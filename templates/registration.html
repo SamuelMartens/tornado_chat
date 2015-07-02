@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block title %} Registration {% endblock %}
+
+{% load staticfiles %}
+
+
+{% block content %}
+
+<div class="log_in_reg_block">
+    <div class="registration">
+
+    <h1>Регистрация</h1>
+<hr>
+<form action='' method="POST" enctype="multipart/form-data" >
+    <table>
+        {{reg_form}}
+        <tr>
+            <th></th>
+            <th align='left'><input type="submit" value="Submit" name="reg_form"></th>
+        </tr>
+    </table>
+    <br>
+</form>
+
+</div>
+
+</div>
+
+{% endblock %}

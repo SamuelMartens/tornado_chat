@@ -6,7 +6,11 @@
     <h1>Собеседники</h1>
     <div class="partners">
     {% for thread in threads %}
-        <p><a href="{% url 'privatemessages.views.chat_view' thread.id %}">{{ thread.partner.username}} ({{ thread.total_messages|default_if_none:"0"}}
+        <p><a href="{% url 'privatemessages.views.chat_view' thread.id %}">
+            {% for partner in thread.partners %}
+                {{ partner.username}}
+            {% endfor %}
+            ({{ thread.total_messages|default_if_none:"0"}}
             {{thread.total_messages|rupluralize:"сообщение, сообщения, сообщений" }})</a> </p>
         {% empty %}
           <p>Пока сообщений нет.</p>

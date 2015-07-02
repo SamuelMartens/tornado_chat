@@ -86,27 +86,48 @@ class MessagesHandler(tornado.websocket.WebSocketHandler ):
             if username == str (self.sender_name):
                 return
 
+            thread = Thread.objects.get(id = self.thread_id)
 
-            http_client = tornado.httpclient.AsyncHTTPClient()
-            request = tornado.httpclient.HTTPRequest(
-                "".join([settings.USERSET_EDIT_API_URL,"/",self.thread_id,"/"]),
-                method = "POST",
-                body = urllib.parse.urlencode({
-                    "operation":"add_user",
-                    "username":username.encode("utf-8"),
-                }))
+            try:
+                thread.participants.get (username = username)
+            except User.DoesNotExist:
+                http_client = tornado.httpclient.AsyncHTTPClient()
+                request_to_add = tornado.httpclient.HTTPRequest(
+                    "".join([settings.USERSET_EDIT_API_URL,"/",self.thread_id,"/"]),
+                    method = "POST",
+                    body = urllib.parse.urlencode({
+                        "operation":"add_user",
+                        "username":username.encode("utf-8"),
+                    }))
 
 
-            http_client.fetch (request, self.handle_request)
+                message = ("{0} добавил нового пользователя {1}  ".format(self.sender_name, username))
 
-            message = ("{0} добавил нового пользователя {1}  ".format(self.sender_name, username))
+
+                request = tornado.httpclient.HTTPRequest(
+                    "".join([settings.SEND_MESSAGE_API_URL, "/", self.thread_id, "/"]),
+                    method="POST",
+                    body = urllib.parse.urlencode({
+                        "message": message.encode ("utf-8"),
+                        "sender_id": self.user_id,
+                    })
+                )
+                http_client.fetch (request, self.handle_request)
+                http_client.fetch (request_to_add, self.handle_request)
+
+
             
-            result = json.dumps({
-                "timestamp": int(time.time()),
-                "sender": self.sender_name,
-                "text": message,
-            })
-            self.write_message(result)
+                result = json.dumps({
+                    "operation":"add_user",
+                    "timestamp": int(time.time()),
+                    "sender": self.sender_name,
+                    "text": message,
+                    "username": username,
+                })
+                self.write_message(result)
+                return
+
+
 
 
 
@@ -133,6 +154,7 @@ class MessagesHandler(tornado.websocket.WebSocketHandler ):
 
             http_client.fetch(request, self.handle_request)
             result = json.dumps({
+                "operation":"send_message",
                 "timestamp": int(time.time()),
                 "sender": self.sender_name,
                 "text": message,

@@ -28,12 +28,15 @@ $(document).ready(function() {
 <div class="chat">
 
     <div class="partner">
-        <p class="name">{{ partner.username }}</p>
+        <span class="name">
+            {% for partner in partners %}
+                {{ partner.username }}
+            {% endfor %}
+        </span>
         <p class="messages"><span class="total">{{ messages_total }}  </span> {{messages_total|rupluralize:"сообщение, сообщения,сообщений"}}
         (<span class="received">{{ messages_received }}</span> получено, <span class="sent">{{ messages_sent }}</span> отправлено) </p>
         <form class="user_tools">
             <button class="btn" id="add_user" type="button">Добавить собеседника</button>
-            <button class="btn" id="delete_user" type="button">Удалить собеседника</button>
         </form>
     </div>
     <div class="conversation">
@@ -47,7 +50,7 @@ $(document).ready(function() {
             {% else %}
                 <p class="author partner">
                     <span class="datetime">{{ message.datetime|date:"d.m.Y H:i:s" }}</span>
-                    {{ partner.username }}:
+                    {{ message.sender.username }}:
                 </p>
             {% endif %}
             <p class="message">{{message.text|linebreaksbr }}</p>

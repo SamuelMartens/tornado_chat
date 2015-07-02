@@ -60,8 +60,12 @@ def send_message_view(request):
 
 
     if thread_queryset.exists():
-        thread=thread_queryset[0]
-    else:
+        thread = None
+        for current_thread in thread_queryset:
+            if current_thread.participants.count() == 2:
+                thread = current_thread
+                break
+    if not thread_queryset.exists() or thread == None :
         thread=Thread.objects.create()
         thread.participants.add(request.user, recipient)
 
@@ -81,7 +85,7 @@ def send_message_view(request):
 #Send message through Tornado
 @csrf_exempt
 def send_message_api_view(request,thread_id):
-    #assert False
+    print ("message")
     if not request.method=='POST':
         return json_response({"error":"Please use POST"})
 
@@ -129,7 +133,8 @@ def messages_view(request):
     user_id=str(request.user.id)
 
     for thread in threads:
-        thread.partner= thread.participants.exclude(id=request.user.id)[0]
+        #thread.partner= thread.participants.exclude(id=request.user.id)[0]
+        thread.partners= thread.participants.exclude(id=request.user.id)
 
 
         thread.total_messages=r.hget(
@@ -183,7 +188,9 @@ def chat_view(request, thread_id):
 
     messages_received=messages_total-messages_sent
 
-    partner=thread.participants.exclude(id=request.user.id)[0]
+
+    partners=thread.participants.exclude(id=request.user.id)
+
 
     tz=request.COOKIES.get("timezone")
 
@@ -197,7 +204,7 @@ def chat_view(request, thread_id):
                                   "messages_total":messages_total,
                                   "messages_sent":messages_sent,
                                   "messages_received":messages_received,
-                                  "partner":partner,
+                                  "partners":partners,
                               },
                               context_instance=RequestContext(request))
 
@@ -227,7 +234,6 @@ def edit_user_set(request, thread_id):
      if request.POST.get("operation") == "add_user":
 
          print ("b3_!")
-         print (thread.participants.get(username="samuel1"))
          try:
              thread.participants.get (username = username)
              print ("User not added")

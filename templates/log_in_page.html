@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block title %} Log in {% endblock %}
+
+{% load staticfiles %}
+
+
+{% block content %}
+
+<div class="log_in_reg_block">
+    <form action="" method="POST" class="log_in_form">
+        Username:
+        {{ log_form.username}}
+        Password:
+        {{ log_form.password}}
+        <input type="submit" value="Log in" name="log_form"><br>
+        <a href="{% url 'tornado_chat.views.reg' %}">Регистрация</a>
+        <br>
+
+    </form>
+
+</div>
+
+
+{% endblock %}

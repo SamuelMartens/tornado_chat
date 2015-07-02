@@ -32,6 +32,11 @@ textarea:focus, input.name:focus {
     box-shadow:0 1px 1px rgba(0, 0, 0, 0.075) inset, 0 0 3px rgba(150, 150, 150, 0.5);
     }
 
+
+div.private_messages{
+    padding: 10px;
+}
+
 div.private_messages h1 {
     margin-top: 0;
     }
@@ -58,7 +63,7 @@ div.chat div.partner p {
     margin: 0;
     }
 
-div.chat div.partner p.name {
+div.chat div.partner span.name {
     font-weight: bold;
     margin-bottom: 3px;
     }
@@ -172,6 +177,30 @@ div.background_popup form.choose_user {
     background-color:white;
 
 
+
+}
+
+/*CSS for log in and registration forms */
+
+div.log_in_reg_block{
+    overflow:hidden;
+    height: 100%;
+
+}
+
+div.log_in_reg_block div.registration {
+    padding:20px;
+
+}
+
+div.log_in_reg_block form.log_in_form {
+    margin: 100px auto auto;
+    width: 200px;
+    height: 130px;
+    padding: 10px;
+    border-radius:5px;
+    box-shadow: 0px 0px 10px #000;
+    background-color:white;
 
 }
 

@@ -11,4 +11,11 @@ urlpatterns = patterns('',
 
 )
 
+urlpatterns += patterns('tornado_chat.views',
+    url(r'^$','log_in_chat' ),
+    url(r'^registration/$', 'reg'),
+
+
+)
+
 urlpatterns+=staticfiles_urlpatterns()
