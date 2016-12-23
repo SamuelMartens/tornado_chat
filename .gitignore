@@ -1,3 +1,4 @@
 .idea/
 tornado_chat/local_settings.py
 *.rdb
+*.pyc
